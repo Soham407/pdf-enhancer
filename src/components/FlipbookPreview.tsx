@@ -3,8 +3,8 @@ import { Card } from "./ui/card";
 import * as pdfjsLib from "pdfjs-dist";
 import { toast } from "sonner";
 
-// Configure PDF.js worker with unpkg CDN
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.js`;
+// Configure PDF.js worker with local file
+pdfjsLib.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.js`;
 
 interface FlipbookPreviewProps {
   pdfFile: File | null;
