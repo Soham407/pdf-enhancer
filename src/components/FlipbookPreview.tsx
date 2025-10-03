@@ -123,7 +123,7 @@ export const FlipbookPreview = ({
                   minHeight={400}
                   maxHeight={1533}
                   maxShadowOpacity={0.5}
-                  showCover={true}
+                  showCover={false}
                   mobileScrollSupport={true}
                   onFlip={(e: any) => setCurrentPage(e.data)}
                   className="flipbook"
@@ -131,7 +131,7 @@ export const FlipbookPreview = ({
                   startPage={0}
                   drawShadow={true}
                   flippingTime={1000}
-                  usePortrait={true}
+                  usePortrait={false}
                   startZIndex={0}
                   autoSize={true}
                   clickEventForward={true}
