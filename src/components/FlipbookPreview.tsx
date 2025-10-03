@@ -118,10 +118,22 @@ export const FlipbookPreview = ({
                 {/* Left page */}
                 {currentPage < pdfPages.length && (
                   <div
-                    className="absolute inset-0 bg-white rounded-r-lg shadow-lg border-r border-gray-200 overflow-hidden"
+                    className={`absolute inset-0 bg-white overflow-hidden transition-all duration-500 ${
+                      flipEffect === "peel"
+                        ? "rounded-r-lg shadow-lg border-r border-gray-200"
+                        : flipEffect === "slide"
+                        ? "rounded-lg shadow-xl"
+                        : "rounded-lg shadow-lg"
+                    }`}
                     style={{
                       transformStyle: "preserve-3d",
-                      transform: "perspective(2000px) rotateY(-5deg)",
+                      transform:
+                        flipEffect === "peel"
+                          ? "perspective(2000px) rotateY(-5deg)"
+                          : flipEffect === "slide"
+                          ? "translateX(0)"
+                          : "rotateY(0deg)",
+                      width: flipEffect === "slide" ? "50%" : "50%",
                     }}
                   >
                     <img
@@ -135,11 +147,23 @@ export const FlipbookPreview = ({
                 {/* Right page */}
                 {currentPage + 1 < pdfPages.length && (
                   <div
-                    className="absolute inset-0 bg-white rounded-l-lg shadow-lg border-l border-gray-200 overflow-hidden"
+                    className={`absolute inset-0 bg-white overflow-hidden transition-all duration-500 ${
+                      flipEffect === "peel"
+                        ? "rounded-l-lg shadow-lg border-l border-gray-200"
+                        : flipEffect === "slide"
+                        ? "rounded-lg shadow-xl"
+                        : "rounded-lg shadow-lg"
+                    }`}
                     style={{
                       transformStyle: "preserve-3d",
-                      transform: "perspective(2000px) rotateY(5deg)",
+                      transform:
+                        flipEffect === "peel"
+                          ? "perspective(2000px) rotateY(5deg)"
+                          : flipEffect === "slide"
+                          ? "translateX(0)"
+                          : "rotateY(0deg)",
                       left: "50%",
+                      width: "50%",
                     }}
                   >
                     <img
