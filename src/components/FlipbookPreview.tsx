@@ -23,6 +23,21 @@ export const FlipbookPreview = ({
   const [pdfPages, setPdfPages] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFlipping, setIsFlipping] = useState(false);
+
+  const handlePageTurn = (direction: "next" | "prev") => {
+    if (isFlipping) return;
+    
+    setIsFlipping(true);
+    
+    if (direction === "next" && currentPage < pdfPages.length - 2) {
+      setCurrentPage(currentPage + 2);
+    } else if (direction === "prev" && currentPage > 0) {
+      setCurrentPage(currentPage - 2);
+    }
+    
+    setTimeout(() => setIsFlipping(false), 600);
+  };
 
   useEffect(() => {
     if (!pdfFile) {
@@ -114,26 +129,25 @@ export const FlipbookPreview = ({
           ) : pdfPages.length > 0 ? (
             <div className="relative w-full h-full flex items-center justify-center">
               {/* Actual PDF flipbook pages */}
-              <div className="relative w-[80%] h-[80%] shadow-2xl">
+              <div className="relative w-[80%] h-[80%]">
                 {/* Left page */}
                 {currentPage < pdfPages.length && (
                   <div
-                    className={`absolute inset-0 bg-white overflow-hidden transition-all duration-500 ${
+                    className={`absolute inset-y-0 left-0 w-1/2 bg-white overflow-hidden shadow-2xl ${
                       flipEffect === "peel"
-                        ? "rounded-r-lg shadow-lg border-r border-gray-200"
+                        ? "rounded-l-2xl"
                         : flipEffect === "slide"
-                        ? "rounded-lg shadow-xl"
-                        : "rounded-lg shadow-lg"
-                    }`}
+                        ? "rounded-lg"
+                        : "rounded-lg"
+                    } ${isFlipping && flipEffect === "peel" ? "animate-page-turn-left" : ""}`}
                     style={{
                       transformStyle: "preserve-3d",
                       transform:
                         flipEffect === "peel"
-                          ? "perspective(2000px) rotateY(-5deg)"
+                          ? "perspective(2000px) rotateY(-2deg)"
                           : flipEffect === "slide"
                           ? "translateX(0)"
                           : "rotateY(0deg)",
-                      width: flipEffect === "slide" ? "50%" : "50%",
                     }}
                   >
                     <img
@@ -141,29 +155,36 @@ export const FlipbookPreview = ({
                       alt={`Page ${currentPage + 1}`}
                       className="w-full h-full object-contain"
                     />
+                    
+                    {/* Interactive corner overlay */}
+                    <button
+                      onClick={() => handlePageTurn("prev")}
+                      disabled={currentPage === 0 || isFlipping}
+                      className="absolute top-0 left-0 w-20 h-20 opacity-0 hover:opacity-100 transition-opacity disabled:cursor-not-allowed group"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent rounded-br-3xl group-hover:from-primary/40" />
+                    </button>
                   </div>
                 )}
                 
                 {/* Right page */}
                 {currentPage + 1 < pdfPages.length && (
                   <div
-                    className={`absolute inset-0 bg-white overflow-hidden transition-all duration-500 ${
+                    className={`absolute inset-y-0 right-0 w-1/2 bg-white overflow-hidden shadow-2xl ${
                       flipEffect === "peel"
-                        ? "rounded-l-lg shadow-lg border-l border-gray-200"
+                        ? "rounded-r-2xl"
                         : flipEffect === "slide"
-                        ? "rounded-lg shadow-xl"
-                        : "rounded-lg shadow-lg"
-                    }`}
+                        ? "rounded-lg"
+                        : "rounded-lg"
+                    } ${isFlipping && flipEffect === "peel" ? "animate-page-turn-right" : ""}`}
                     style={{
                       transformStyle: "preserve-3d",
                       transform:
                         flipEffect === "peel"
-                          ? "perspective(2000px) rotateY(5deg)"
+                          ? "perspective(2000px) rotateY(2deg)"
                           : flipEffect === "slide"
                           ? "translateX(0)"
                           : "rotateY(0deg)",
-                      left: "50%",
-                      width: "50%",
                     }}
                   >
                     <img
@@ -171,28 +192,40 @@ export const FlipbookPreview = ({
                       alt={`Page ${currentPage + 2}`}
                       className="w-full h-full object-contain"
                     />
+                    
+                    {/* Interactive corner overlay */}
+                    <button
+                      onClick={() => handlePageTurn("next")}
+                      disabled={currentPage >= pdfPages.length - 2 || isFlipping}
+                      className="absolute top-0 right-0 w-20 h-20 opacity-0 hover:opacity-100 transition-opacity disabled:cursor-not-allowed group"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-bl from-primary/20 to-transparent rounded-bl-3xl group-hover:from-primary/40" />
+                    </button>
                   </div>
+                )}
+
+                {/* Page spine/binding */}
+                {flipEffect === "peel" && (
+                  <div className="absolute inset-y-0 left-1/2 w-1 -translate-x-1/2 bg-gradient-to-b from-gray-400/50 via-gray-500/50 to-gray-400/50 shadow-lg z-10" />
                 )}
               </div>
 
               {/* Page turn controls */}
-              <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-black/50 backdrop-blur-sm px-6 py-3 rounded-full text-white">
+              <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-black/70 backdrop-blur-md px-8 py-4 rounded-full text-white shadow-elevated z-20">
                 <button
-                  onClick={() => setCurrentPage(Math.max(0, currentPage - 2))}
-                  disabled={currentPage === 0}
-                  className="hover:text-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={() => handlePageTurn("prev")}
+                  disabled={currentPage === 0 || isFlipping}
+                  className="text-2xl hover:text-accent transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   ←
                 </button>
-                <span className="text-sm">
-                  {currentPage + 1}-{Math.min(currentPage + 2, pdfPages.length)} of {pdfPages.length}
+                <span className="text-sm font-medium min-w-[100px] text-center">
+                  Pages {currentPage + 1}-{Math.min(currentPage + 2, pdfPages.length)} of {pdfPages.length}
                 </span>
                 <button
-                  onClick={() =>
-                    setCurrentPage(Math.min(pdfPages.length - 2, currentPage + 2))
-                  }
-                  disabled={currentPage >= pdfPages.length - 2}
-                  className="hover:text-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={() => handlePageTurn("next")}
+                  disabled={currentPage >= pdfPages.length - 2 || isFlipping}
+                  className="text-2xl hover:text-accent transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   →
                 </button>
