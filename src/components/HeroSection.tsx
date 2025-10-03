@@ -3,9 +3,10 @@ import { Button } from "./ui/button";
 
 interface HeroSectionProps {
   onGetStarted: () => void;
+  onViewDemo: () => void;
 }
 
-export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
+export const HeroSection = ({ onGetStarted, onViewDemo }: HeroSectionProps) => {
   return (
     <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden bg-gradient-bg">
       {/* Animated background elements */}
@@ -47,6 +48,7 @@ export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
             size="lg" 
             variant="outline" 
             className="text-lg px-8 py-6 border-2"
+            onClick={onViewDemo}
           >
             See Demo
           </Button>

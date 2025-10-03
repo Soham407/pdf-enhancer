@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { HeroSection } from "@/components/HeroSection";
 import { UploadSection } from "@/components/UploadSection";
 import { CustomizationPanel } from "@/components/CustomizationPanel";
 import { FlipbookPreview } from "@/components/FlipbookPreview";
 import { ShareExportPanel } from "@/components/ShareExportPanel";
+import { DemoFlipbook } from "@/components/DemoFlipbook";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState<"hero" | "upload" | "editor">("hero");
+  const demoRef = useRef<HTMLDivElement>(null);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [backgroundColor, setBackgroundColor] = useState("#ffffff");
   const [flipEffect, setFlipEffect] = useState("peel");
@@ -36,8 +38,17 @@ const Index = () => {
     setPdfFile(null);
   };
 
+  const handleViewDemo = () => {
+    demoRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   if (currentStep === "hero") {
-    return <HeroSection onGetStarted={handleGetStarted} />;
+    return (
+      <div ref={demoRef}>
+        <HeroSection onGetStarted={handleGetStarted} onViewDemo={handleViewDemo} />
+        <DemoFlipbook />
+      </div>
+    );
   }
 
   if (currentStep === "upload") {
