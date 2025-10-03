@@ -39,7 +39,7 @@ export const CustomizationPanel = ({
   };
 
   return (
-    <div className="w-full lg:w-80 bg-card border-r border-border p-6 overflow-y-auto">
+    <div className="w-full p-6">
       <h2 className="text-2xl font-bold mb-6">Customize</h2>
 
       {/* Background Color */}

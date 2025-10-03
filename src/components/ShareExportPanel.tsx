@@ -26,7 +26,7 @@ export const ShareExportPanel = () => {
   };
 
   return (
-    <div className="w-full lg:w-96 bg-card border-l border-border p-6 overflow-y-auto">
+    <div className="w-full p-6">
       <h2 className="text-2xl font-bold mb-6">Share & Export</h2>
 
       {/* Direct Link */}

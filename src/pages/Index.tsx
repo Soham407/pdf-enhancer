@@ -6,7 +6,8 @@ import { FlipbookPreview } from "@/components/FlipbookPreview";
 import { ShareExportPanel } from "@/components/ShareExportPanel";
 import { DemoFlipbook } from "@/components/DemoFlipbook";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { ArrowLeft, Palette, Share2 } from "lucide-react";
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState<"hero" | "upload" | "editor">("hero");
@@ -15,6 +16,8 @@ const Index = () => {
   const [backgroundColor, setBackgroundColor] = useState("#ffffff");
   const [flipEffect, setFlipEffect] = useState("peel");
   const [logo, setLogo] = useState<string | null>(null);
+  const [customizeOpen, setCustomizeOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
 
   const handleGetStarted = () => {
     setCurrentStep("upload");
@@ -56,9 +59,9 @@ const Index = () => {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen overflow-hidden">
-      {/* Header for mobile */}
-      <div className="lg:hidden bg-card border-b border-border p-4 flex items-center justify-between">
+    <div className="flex flex-col h-screen overflow-hidden">
+      {/* Header with drawer controls */}
+      <div className="bg-card border-b border-border p-4 flex items-center justify-between">
         <Button
           variant="ghost"
           size="sm"
@@ -68,31 +71,45 @@ const Index = () => {
           Back
         </Button>
         <h1 className="font-bold">Flipbook Editor</h1>
-        <div className="w-20" /> {/* Spacer for centering */}
-      </div>
+        <div className="flex gap-2">
+          <Sheet open={customizeOpen} onOpenChange={setCustomizeOpen}>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon">
+                <Palette className="h-4 w-4" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-80 overflow-y-auto">
+              <CustomizationPanel
+                backgroundColor={backgroundColor}
+                onBackgroundChange={setBackgroundColor}
+                flipEffect={flipEffect}
+                onFlipEffectChange={setFlipEffect}
+                onLogoUpload={handleLogoUpload}
+              />
+            </SheetContent>
+          </Sheet>
 
-      {/* Customization Panel */}
-      <div className="hidden lg:block">
-        <CustomizationPanel
-          backgroundColor={backgroundColor}
-          onBackgroundChange={setBackgroundColor}
-          flipEffect={flipEffect}
-          onFlipEffectChange={setFlipEffect}
-          onLogoUpload={handleLogoUpload}
-        />
+          <Sheet open={shareOpen} onOpenChange={setShareOpen}>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon">
+                <Share2 className="h-4 w-4" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-80 overflow-y-auto">
+              <ShareExportPanel />
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
 
       {/* Preview Area */}
-      <FlipbookPreview
-        pdfFile={pdfFile}
-        backgroundColor={backgroundColor}
-        flipEffect={flipEffect}
-        logo={logo}
-      />
-
-      {/* Share & Export Panel */}
-      <div className="hidden lg:block">
-        <ShareExportPanel />
+      <div className="flex-1 overflow-hidden">
+        <FlipbookPreview
+          pdfFile={pdfFile}
+          backgroundColor={backgroundColor}
+          flipEffect={flipEffect}
+          logo={logo}
+        />
       </div>
     </div>
   );
