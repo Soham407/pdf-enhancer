@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { Card } from "./ui/card";
 import * as pdfjsLib from "pdfjs-dist";
 import { toast } from "sonner";
-import $ from "jquery";
-import "turn.js";
+import HTMLFlipBook from "react-pageflip";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "./ui/button";
 
 // Configure PDF.js worker with local file
 pdfjsLib.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.js`;
@@ -15,50 +16,6 @@ interface FlipbookPreviewProps {
   logo: string | null;
 }
 
-// Internal component for turn.js flipbook
-const TurnJsFlipbook = ({ pages }: { pages: string[] }) => {
-  const flipbookRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (flipbookRef.current && pages.length > 0) {
-      const $flipbook = $(flipbookRef.current);
-
-      // Initialize turn.js
-      ($flipbook as any).turn({
-        width: 800,
-        height: 600,
-        autoCenter: true,
-        display: "double",
-        acceleration: true,
-        elevation: 50,
-        gradients: true,
-        duration: 1000,
-      });
-
-      // Cleanup on unmount
-      return () => {
-        if (($flipbook as any).turn("is")) {
-          ($flipbook as any).turn("destroy");
-        }
-      };
-    }
-  }, [pages]);
-
-  return (
-    <div ref={flipbookRef} className="flipbook-container">
-      {pages.map((page, index) => (
-        <div key={index} className="page bg-white shadow-2xl">
-          <img 
-            src={page} 
-            alt={`Page ${index + 1}`} 
-            className="w-full h-full object-contain"
-          />
-        </div>
-      ))}
-    </div>
-  );
-};
-
 export const FlipbookPreview = ({
   pdfFile,
   backgroundColor,
@@ -67,6 +24,8 @@ export const FlipbookPreview = ({
 }: FlipbookPreviewProps) => {
   const [pdfPages, setPdfPages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const bookRef = useRef<any>(null);
 
   useEffect(() => {
     if (!pdfFile) {
@@ -152,7 +111,72 @@ export const FlipbookPreview = ({
               <p className="text-lg">Processing your PDF...</p>
             </div>
           ) : pdfPages.length > 0 ? (
-            <TurnJsFlipbook pages={pdfPages} />
+            <div className="relative w-full h-full flex flex-col items-center justify-center">
+              <div className="flex-1 flex items-center justify-center w-full">
+                {/* @ts-ignore - react-pageflip types are incomplete */}
+                <HTMLFlipBook
+                  width={400}
+                  height={500}
+                  size="stretch"
+                  minWidth={315}
+                  maxWidth={1000}
+                  minHeight={400}
+                  maxHeight={1533}
+                  maxShadowOpacity={0.5}
+                  showCover={true}
+                  mobileScrollSupport={true}
+                  onFlip={(e: any) => setCurrentPage(e.data)}
+                  className="flipbook"
+                  ref={bookRef}
+                  startPage={0}
+                  drawShadow={true}
+                  flippingTime={1000}
+                  usePortrait={true}
+                  startZIndex={0}
+                  autoSize={true}
+                  clickEventForward={true}
+                  useMouseEvents={true}
+                  swipeDistance={30}
+                  showPageCorners={true}
+                  disableFlipByClick={false}
+                >
+                  {pdfPages.map((page, index) => (
+                    <div key={index} className="page bg-white shadow-2xl">
+                      <img 
+                        src={page} 
+                        alt={`Page ${index + 1}`} 
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                  ))}
+                </HTMLFlipBook>
+              </div>
+              
+              {/* Navigation controls */}
+              <div className="mt-4 flex items-center gap-4 bg-black/70 backdrop-blur-md px-8 py-4 rounded-full text-white shadow-elevated z-20">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => bookRef.current?.pageFlip()?.flipPrev()}
+                  disabled={currentPage === 0}
+                  className="text-white hover:text-accent hover:bg-white/10"
+                >
+                  <ChevronLeft className="h-6 w-6" />
+                </Button>
+                <span className="text-sm font-medium min-w-[100px] text-center">
+                  Page {currentPage + 1} of {pdfPages.length}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => bookRef.current?.pageFlip()?.flipNext()}
+                  disabled={currentPage >= pdfPages.length - 1}
+                  className="text-white hover:text-accent hover:bg-white/10"
+                >
+                  <ChevronRight className="h-6 w-6" />
+                </Button>
+              </div>
+            </div>
           ) : null}
         </div>
       </Card>
