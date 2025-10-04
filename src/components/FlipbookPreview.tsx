@@ -143,11 +143,11 @@ export const FlipbookPreview = ({
             </Button>
 
             {/* Flipbook */}
-            <div className="flex-1 flex items-center justify-center w-full h-full px-16 md:px-20">
+            <div className="flex-1 flex items-center justify-center w-full h-full px-16 md:px-20 pb-12">
               {/* @ts-ignore - react-pageflip types are incomplete */}
               <HTMLFlipBook
-                width={400}
-                height={600}
+                width={350}
+                height={525}
                 size="stretch"
                 minWidth={280}
                 maxWidth={1200}
