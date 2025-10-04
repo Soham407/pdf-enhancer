@@ -109,7 +109,26 @@ export const FlipbookPreview = ({
             <p className="text-lg">Processing your PDF...</p>
           </div>
         ) : pdfPages.length > 0 ? (
-          <div className="relative w-full h-full flex flex-col items-center justify-center">
+          <div className="relative w-full h-full flex items-center justify-center">
+            {/* Page counter at top */}
+            <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/70 backdrop-blur-md px-6 py-2 rounded-full text-white shadow-elevated z-30">
+              <span className="text-sm font-medium">
+                Page {currentPage + 1} of {pdfPages.length}
+              </span>
+            </div>
+
+            {/* Left navigation button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => bookRef.current?.pageFlip()?.flipPrev()}
+              disabled={currentPage === 0}
+              className="absolute left-4 top-1/2 -translate-y-1/2 h-12 w-12 bg-black/70 backdrop-blur-md text-white hover:text-accent hover:bg-black/80 rounded-full shadow-elevated z-30"
+            >
+              <ChevronLeft className="h-8 w-8" />
+            </Button>
+
+            {/* Flipbook */}
             <div className="flex-1 flex items-center justify-center w-full">
               {/* @ts-ignore - react-pageflip types are incomplete */}
               <HTMLFlipBook
@@ -149,31 +168,17 @@ export const FlipbookPreview = ({
                 ))}
               </HTMLFlipBook>
             </div>
-            
-            {/* Navigation controls */}
-            <div className="mt-4 flex items-center gap-4 bg-black/70 backdrop-blur-md px-8 py-4 rounded-full text-white shadow-elevated z-20">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => bookRef.current?.pageFlip()?.flipPrev()}
-                disabled={currentPage === 0}
-                className="text-white hover:text-accent hover:bg-white/10"
-              >
-                <ChevronLeft className="h-6 w-6" />
-              </Button>
-              <span className="text-sm font-medium min-w-[100px] text-center">
-                Page {currentPage + 1} of {pdfPages.length}
-              </span>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => bookRef.current?.pageFlip()?.flipNext()}
-                disabled={currentPage >= pdfPages.length - 1}
-                className="text-white hover:text-accent hover:bg-white/10"
-              >
-                <ChevronRight className="h-6 w-6" />
-              </Button>
-            </div>
+
+            {/* Right navigation button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => bookRef.current?.pageFlip()?.flipNext()}
+              disabled={currentPage >= pdfPages.length - 1}
+              className="absolute right-4 top-1/2 -translate-y-1/2 h-12 w-12 bg-black/70 backdrop-blur-md text-white hover:text-accent hover:bg-black/80 rounded-full shadow-elevated z-30"
+            >
+              <ChevronRight className="h-8 w-8" />
+            </Button>
           </div>
         ) : null}
       </div>
