@@ -97,7 +97,7 @@ export const FlipbookPreview = ({
         </div>
       )}
 
-      <div className="w-full h-full flex items-center justify-center">
+      <div className="w-full h-full flex items-center justify-center pb-8">
         {!pdfFile ? (
           <div className="text-center text-muted-foreground">
             <div className="text-6xl mb-4">📖</div>
@@ -109,7 +109,7 @@ export const FlipbookPreview = ({
             <p className="text-lg">Processing your PDF...</p>
           </div>
         ) : pdfPages.length > 0 ? (
-          <div className="relative w-full h-full flex items-center justify-center">
+          <div className="relative w-full h-full flex items-center justify-center max-w-7xl mx-auto">
             {/* Page counter at top */}
             <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/70 backdrop-blur-md px-6 py-2 rounded-full text-white shadow-elevated z-30">
               <span className="text-sm font-medium">
@@ -123,27 +123,27 @@ export const FlipbookPreview = ({
               size="icon"
               onClick={() => bookRef.current?.pageFlip()?.flipPrev()}
               disabled={currentPage === 0}
-              className="absolute left-4 top-1/2 -translate-y-1/2 h-12 w-12 bg-black/70 backdrop-blur-md text-white hover:text-accent hover:bg-black/80 rounded-full shadow-elevated z-30"
+              className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 h-10 w-10 md:h-12 md:w-12 bg-black/70 backdrop-blur-md text-white hover:text-accent hover:bg-black/80 rounded-full shadow-elevated z-30"
             >
-              <ChevronLeft className="h-8 w-8" />
+              <ChevronLeft className="h-6 w-6 md:h-8 md:w-8" />
             </Button>
 
             {/* Flipbook */}
-            <div className="flex-1 flex items-center justify-center w-full">
+            <div className="flex-1 flex items-center justify-center w-full h-full px-16 md:px-20">
               {/* @ts-ignore - react-pageflip types are incomplete */}
               <HTMLFlipBook
                 width={400}
-                height={500}
+                height={600}
                 size="stretch"
-                minWidth={315}
-                maxWidth={1000}
+                minWidth={280}
+                maxWidth={1200}
                 minHeight={400}
-                maxHeight={1533}
+                maxHeight={1800}
                 maxShadowOpacity={0.5}
                 showCover={true}
                 mobileScrollSupport={true}
                 onFlip={(e: any) => setCurrentPage(e.data)}
-                className="flipbook"
+                className="flipbook w-full h-full"
                 ref={bookRef}
                 startPage={0}
                 drawShadow={true}
@@ -175,9 +175,9 @@ export const FlipbookPreview = ({
               size="icon"
               onClick={() => bookRef.current?.pageFlip()?.flipNext()}
               disabled={currentPage >= pdfPages.length - 1}
-              className="absolute right-4 top-1/2 -translate-y-1/2 h-12 w-12 bg-black/70 backdrop-blur-md text-white hover:text-accent hover:bg-black/80 rounded-full shadow-elevated z-30"
+              className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 h-10 w-10 md:h-12 md:w-12 bg-black/70 backdrop-blur-md text-white hover:text-accent hover:bg-black/80 rounded-full shadow-elevated z-30"
             >
-              <ChevronRight className="h-8 w-8" />
+              <ChevronRight className="h-6 w-6 md:h-8 md:w-8" />
             </Button>
           </div>
         ) : null}
