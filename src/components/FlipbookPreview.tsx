@@ -65,6 +65,20 @@ export const FlipbookPreview = ({
               }
             }
             
+            // Add blank page if odd number of pages
+            if (pages.length % 2 !== 0) {
+              const canvas = document.createElement('canvas');
+              const context = canvas.getContext('2d');
+              canvas.width = 800;
+              canvas.height = 1200;
+              
+              if (context) {
+                context.fillStyle = 'white';
+                context.fillRect(0, 0, canvas.width, canvas.height);
+                pages.push(canvas.toDataURL());
+              }
+            }
+            
             setPdfPages(pages);
             toast.success(`PDF loaded: ${pdf.numPages} pages`);
           } catch (error) {
