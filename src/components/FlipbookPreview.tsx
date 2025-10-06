@@ -142,22 +142,22 @@ export const FlipbookPreview = ({
               <ChevronLeft className="h-6 w-6 md:h-8 md:w-8" />
             </Button>
 
-            {/* Flipbook */}
-            <div className="flex-1 flex items-center justify-center w-full h-[90%] px-16 md:px-20">
+            {/* Flipbook Container */}
+            <div className="w-full h-full flex items-center justify-center p-4 md:p-8">
               {/* @ts-ignore - react-pageflip types are incomplete */}
               <HTMLFlipBook
-                width={350}
-                height={525}
+                width={550}
+                height={733}
                 size="stretch"
-                minWidth={280}
-                maxWidth={1200}
-                minHeight={400}
-                maxHeight={1800}
+                minWidth={315}
+                maxWidth={1000}
+                minHeight={420}
+                maxHeight={1333}
                 maxShadowOpacity={0.5}
                 showCover={true}
                 mobileScrollSupport={true}
                 onFlip={(e: any) => setCurrentPage(e.data)}
-                className="flipbook w-full h-full"
+                className="!w-auto !max-w-full !h-auto !max-h-full"
                 ref={bookRef}
                 startPage={0}
                 drawShadow={true}
@@ -172,11 +172,11 @@ export const FlipbookPreview = ({
                 disableFlipByClick={false}
               >
                 {pdfPages.map((page, index) => (
-                  <div key={index} className="page bg-white shadow-2xl">
+                  <div key={index} className="page bg-white shadow-2xl flex justify-center items-center">
                     <img 
                       src={page} 
                       alt={`Page ${index + 1}`} 
-                      className="w-full h-full object-contain"
+                      className="max-w-full max-h-full object-contain"
                     />
                   </div>
                 ))}
