@@ -111,7 +111,7 @@ export const FlipbookPreview = ({
         </div>
       )}
 
-      <div className="w-full h-full flex items-center justify-center pb-8">
+      <div className="w-full h-full flex items-center justify-center">
         {!pdfFile ? (
           <div className="text-center text-muted-foreground">
             <div className="text-6xl mb-4">📖</div>
@@ -143,7 +143,7 @@ export const FlipbookPreview = ({
             </Button>
 
             {/* Flipbook */}
-            <div className="flex-1 flex items-center justify-center w-full h-full px-16 md:px-20 pb-12">
+            <div className="flex-1 flex items-center justify-center w-full h-[90%] px-16 md:px-20">
               {/* @ts-ignore - react-pageflip types are incomplete */}
               <HTMLFlipBook
                 width={350}
