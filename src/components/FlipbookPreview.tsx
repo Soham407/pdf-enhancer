@@ -104,7 +104,7 @@ export const FlipbookPreview = ({
 
   return (
     <div 
-      className="h-screen pt-6 px-6 pb-0 overflow-hidden flex items-center justify-center relative"
+      className="h-screen pt-6 px-6 pb-6 overflow-hidden flex items-center justify-center relative"
       style={{ backgroundColor }}
     >
       {logo && (
