@@ -161,6 +161,7 @@ export const FlipbookPreview = ({
                 onFlip={(e: any) => setCurrentPage(e.data)}
                 className="flipbook !w-auto !max-w-full !h-auto !max-h-full"
                 ref={bookRef}
+                key={isMobile ? "portrait" : "landscape"}
                 startPage={0}
                 drawShadow={true}
                 flippingTime={1000}
