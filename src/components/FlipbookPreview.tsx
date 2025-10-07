@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import HTMLFlipBook from "react-pageflip";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Configure PDF.js worker with local file
 pdfjsLib.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.js`;
@@ -25,6 +26,7 @@ export const FlipbookPreview = ({
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const bookRef = useRef<any>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (!pdfFile) {
@@ -162,7 +164,7 @@ export const FlipbookPreview = ({
                 startPage={0}
                 drawShadow={true}
                 flippingTime={1000}
-                usePortrait={true}
+                usePortrait={isMobile}
                 startZIndex={0}
                 autoSize={true}
                 clickEventForward={true}
