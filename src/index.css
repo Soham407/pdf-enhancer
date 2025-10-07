@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Fix for flipbook page backface visibility */
+@layer components {
+  .flipbook .page {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+}
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */

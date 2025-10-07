@@ -157,7 +157,7 @@ export const FlipbookPreview = ({
                 showCover={true}
                 mobileScrollSupport={true}
                 onFlip={(e: any) => setCurrentPage(e.data)}
-                className="!w-auto !max-w-full !h-auto !max-h-full"
+                className="flipbook !w-auto !max-w-full !h-auto !max-h-full"
                 ref={bookRef}
                 startPage={0}
                 drawShadow={true}
