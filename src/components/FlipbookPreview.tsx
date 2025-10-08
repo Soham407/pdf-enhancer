@@ -25,6 +25,7 @@ export const FlipbookPreview = ({
   const [pdfPages, setPdfPages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
+  const [pdfDimensions, setPdfDimensions] = useState({ width: 550, height: 733 });
   const bookRef = useRef<any>(null);
   const isMobile = useIsMobile();
 
@@ -43,6 +44,11 @@ export const FlipbookPreview = ({
           try {
             const typedArray = new Uint8Array(e.target?.result as ArrayBuffer);
             const pdf = await pdfjsLib.getDocument({ data: typedArray }).promise;
+            
+            // Get dimensions from first page
+            const firstPage = await pdf.getPage(1);
+            const firstViewport = firstPage.getViewport({ scale: 1 });
+            setPdfDimensions({ width: firstViewport.width, height: firstViewport.height });
             
             const pages: string[] = [];
             
@@ -148,8 +154,8 @@ export const FlipbookPreview = ({
             <div className="w-full h-full flex items-center justify-center p-4 md:p-8">
               {/* @ts-ignore - react-pageflip types are incomplete */}
               <HTMLFlipBook
-                width={550}
-                height={733}
+                width={pdfDimensions.width}
+                height={pdfDimensions.height}
                 size="stretch"
                 minWidth={315}
                 maxWidth={1000}
