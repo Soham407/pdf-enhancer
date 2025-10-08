@@ -8,22 +8,6 @@
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
   }
-
-  /* Fix for cover animation jump - ensure correct hinge point on wrappers and inner pages */
-  .flipbook .page-wrapper:first-child,
-  .flipbook .page-wrapper:first-child .page {
-    transform-origin: 0 50% !important;
-  }
-  .flipbook .page-wrapper:last-child,
-  .flipbook .page-wrapper:last-child .page {
-    transform-origin: 100% 50% !important;
-  }
-
-  /* Improve stability to prevent initial flicker on cover turn */
-  .flipbook .page,
-  .flipbook .page-wrapper {
-    will-change: transform;
-  }
 }
 
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 

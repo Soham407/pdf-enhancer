@@ -29,10 +29,6 @@ export const FlipbookPreview = ({
   const bookRef = useRef<any>(null);
   const isMobile = useIsMobile();
 
-  // Derived counts accounting for added cover pages (front + back)
-  const totalFlipPages = pdfPages.length + 2;
-  const displayPage = Math.min(Math.max(currentPage - 1, 0) + 1, pdfPages.length);
-
   useEffect(() => {
     if (!pdfFile) {
       setPdfPages([]);
@@ -73,20 +69,6 @@ export const FlipbookPreview = ({
                   canvas: canvas,
                 }).promise;
                 
-                pages.push(canvas.toDataURL());
-              }
-            }
-            
-            // Add blank page if odd number of pages
-            if (pages.length % 2 !== 0) {
-              const canvas = document.createElement('canvas');
-              const context = canvas.getContext('2d');
-              canvas.width = 800;
-              canvas.height = 1200;
-              
-              if (context) {
-                context.fillStyle = 'white';
-                context.fillRect(0, 0, canvas.width, canvas.height);
                 pages.push(canvas.toDataURL());
               }
             }
@@ -139,7 +121,7 @@ export const FlipbookPreview = ({
             {/* Page counter at top */}
             <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/70 backdrop-blur-md px-6 py-2 rounded-full text-white shadow-elevated z-30">
               <span className="text-sm font-medium">
-                Page {displayPage} of {pdfPages.length}
+                Page {isMobile ? currentPage + 1 : currentPage === 0 ? 1 : currentPage * 2} of {pdfPages.length}
               </span>
             </div>
 
@@ -158,6 +140,7 @@ export const FlipbookPreview = ({
             <div className="w-full h-full flex items-center justify-center p-4 md:p-8">
               {/* @ts-ignore - react-pageflip types are incomplete */}
               <HTMLFlipBook
+                key={pdfPages.length}
                 width={pdfDimensions.width}
                 height={pdfDimensions.height}
                 size="stretch"
@@ -171,7 +154,6 @@ export const FlipbookPreview = ({
                 onFlip={(e: any) => setCurrentPage(e.data)}
                 className="flipbook h-full w-auto !max-w-full"
                 ref={bookRef}
-                key={isMobile ? "portrait" : "landscape"}
                 startPage={0}
                 drawShadow={true}
                 flippingTime={1000}
@@ -184,17 +166,21 @@ export const FlipbookPreview = ({
                 showPageCorners={true}
                 disableFlipByClick={false}
               >
-                {/* Front cover dummy */}
-                <div className="page bg-white" />
-
                 {pdfPages.map((page, index) => (
-                  <div key={index} className="page flex items-center justify-center shadow-2xl bg-white">
-                    <img src={page} alt={`Page ${index + 1}`} className="max-h-full max-w-full object-contain" />
+                  <div 
+                    key={index} 
+                    className={`page flex justify-center items-center shadow-2xl ${
+                      index === 0 || index === pdfPages.length - 1 ? "bg-gray-200" : "bg-white"
+                    }`}
+                    data-density={index === 0 || index === pdfPages.length - 1 ? "hard" : "soft"}
+                  >
+                    <img 
+                      src={page} 
+                      alt={`Page ${index + 1}`} 
+                      className="max-w-full max-h-full object-contain"
+                    />
                   </div>
                 ))}
-
-                {/* Back cover dummy */}
-                <div className="page bg-white" />
               </HTMLFlipBook>
             </div>
 
@@ -203,7 +189,7 @@ export const FlipbookPreview = ({
               variant="ghost"
               size="icon"
               onClick={() => bookRef.current?.pageFlip()?.flipNext()}
-              disabled={currentPage >= totalFlipPages - 1}
+              disabled={currentPage >= pdfPages.length - 1}
               className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 h-10 w-10 md:h-12 md:w-12 bg-black/70 backdrop-blur-md text-white hover:text-accent hover:bg-black/80 rounded-full shadow-elevated z-30"
             >
               <ChevronRight className="h-6 w-6 md:h-8 md:w-8" />
