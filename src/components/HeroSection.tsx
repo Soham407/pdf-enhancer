@@ -1,4 +1,5 @@
 import { Upload } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 
 interface HeroSectionProps {
@@ -7,8 +8,17 @@ interface HeroSectionProps {
 }
 
 export const HeroSection = ({ onGetStarted, onViewDemo }: HeroSectionProps) => {
+  const navigate = useNavigate();
+
   return (
     <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden bg-gradient-bg">
+      {/* Top Navigation */}
+      <div className="absolute top-0 left-0 right-0 z-20 p-4 flex justify-end">
+        <Button variant="outline" onClick={() => navigate("/pricing")}>
+          View Pricing
+        </Button>
+      </div>
+
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-float" />

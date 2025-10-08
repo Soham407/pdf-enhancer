@@ -1,4 +1,7 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { Session } from "@supabase/supabase-js";
 import { HeroSection } from "@/components/HeroSection";
 import { UploadSection } from "@/components/UploadSection";
 import { CustomizationPanel } from "@/components/CustomizationPanel";
@@ -7,9 +10,11 @@ import { ShareExportPanel } from "@/components/ShareExportPanel";
 import { DemoFlipbook } from "@/components/DemoFlipbook";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { ArrowLeft, Palette, Share2 } from "lucide-react";
+import { ArrowLeft, Palette, Share2, LogOut } from "lucide-react";
 
 const Index = () => {
+  const navigate = useNavigate();
+  const [session, setSession] = useState<Session | null>(null);
   const [currentStep, setCurrentStep] = useState<"hero" | "upload" | "editor">("hero");
   const demoRef = useRef<HTMLDivElement>(null);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
@@ -18,6 +23,18 @@ const Index = () => {
   const [logo, setLogo] = useState<string | null>(null);
   const [customizeOpen, setCustomizeOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleGetStarted = () => {
     setCurrentStep("upload");
@@ -43,6 +60,11 @@ const Index = () => {
 
   const handleViewDemo = () => {
     demoRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    navigate("/auth");
   };
 
   if (currentStep === "hero") {
@@ -72,6 +94,12 @@ const Index = () => {
         </Button>
         <h1 className="font-bold">Flipbook Editor</h1>
         <div className="flex gap-2">
+          {session && (
+            <Button variant="ghost" size="sm" onClick={handleSignOut}>
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
+          )}
           <Sheet open={customizeOpen} onOpenChange={setCustomizeOpen}>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon">
