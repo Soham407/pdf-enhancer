@@ -29,6 +29,10 @@ export const FlipbookPreview = ({
   const bookRef = useRef<any>(null);
   const isMobile = useIsMobile();
 
+  // Derived counts accounting for added cover pages (front + back)
+  const totalFlipPages = pdfPages.length + 2;
+  const displayPage = Math.min(Math.max(currentPage - 1, 0) + 1, pdfPages.length);
+
   useEffect(() => {
     if (!pdfFile) {
       setPdfPages([]);
@@ -135,7 +139,7 @@ export const FlipbookPreview = ({
             {/* Page counter at top */}
             <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/70 backdrop-blur-md px-6 py-2 rounded-full text-white shadow-elevated z-30">
               <span className="text-sm font-medium">
-                Page {currentPage + 1} of {pdfPages.length}
+                Page {displayPage} of {pdfPages.length}
               </span>
             </div>
 
@@ -180,15 +184,17 @@ export const FlipbookPreview = ({
                 showPageCorners={true}
                 disableFlipByClick={false}
               >
+                {/* Front cover dummy */}
+                <div className="page bg-white" />
+
                 {pdfPages.map((page, index) => (
-                  <div key={index} className="page bg-white shadow-2xl flex justify-center items-center">
-                    <img 
-                      src={page} 
-                      alt={`Page ${index + 1}`} 
-                      className="max-w-full max-h-full object-contain"
-                    />
+                  <div key={index} className="page flex items-center justify-center shadow-2xl bg-white">
+                    <img src={page} alt={`Page ${index + 1}`} className="max-h-full max-w-full object-contain" />
                   </div>
                 ))}
+
+                {/* Back cover dummy */}
+                <div className="page bg-white" />
               </HTMLFlipBook>
             </div>
 
@@ -197,7 +203,7 @@ export const FlipbookPreview = ({
               variant="ghost"
               size="icon"
               onClick={() => bookRef.current?.pageFlip()?.flipNext()}
-              disabled={currentPage >= pdfPages.length - 1}
+              disabled={currentPage >= totalFlipPages - 1}
               className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 h-10 w-10 md:h-12 md:w-12 bg-black/70 backdrop-blur-md text-white hover:text-accent hover:bg-black/80 rounded-full shadow-elevated z-30"
             >
               <ChevronRight className="h-6 w-6 md:h-8 md:w-8" />
